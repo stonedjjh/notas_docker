@@ -9,8 +9,8 @@ Una colección de ejemplos y plantillas listas para usar que demuestran las mejo
 **Requisitos**
 Necesitarás tener instalado lo siguiente para ejecutar y modificar las plantillas:
 
-Docker Engine: Para construir y ejecutar los contenedores.
+**Docker Engine:** Para construir y ejecutar los contenedores.
 
-Docker Compose: Para orquestar múltiples servicios con un solo comando.
+**Docker Compose:** Para orquestar múltiples servicios con un solo comando.
 
 
