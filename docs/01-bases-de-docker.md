@@ -263,3 +263,149 @@ Untagged: hello-world:latest
 Deleted: sha256:54e66cc1dd1fcb1c3c58bd8017914dbed8701e2d8c74d9262e26bd9cc1642d31
 ```
 
+## Ejecución Avanzada de Contenedores
+
+Para ejecutar aplicaciones de servidor que se mantengan activas en segundo plano y a las que podamos acceder desde nuestro navegador, necesitamos usar flags o banderas con el comando docker run
+
+|Bandera| Nombre | Descripción |
+|:-----:|:------:|:------------|
+|-d| Detached |Ejecuta el contenedor en segundo plano (modo detached). Esto libera la terminal para que puedas seguir usándola mientras el contenedor se mantiene activo.|
+|-p|Port Mapping|Mapea un puerto de tu máquina local a un puerto dentro del contenedor. Es necesario para acceder a servicios web.|
+
+**Sintaxis:**
+
+```Bash
+-p <PUERTO_LOCAL>:<PUERTO_CONTENEDOR>
+```
+
+<PUERTO_LOCAL>: Es el puerto que usas para acceder desde tu navegador (ej: http://localhost:8080).
+
+<PUERTO_CONTENEDOR>: Es el puerto interno en el que el servicio dentro del contenedor está escuchando (ej: 80 para Nginx o 3000 para un servidor Node).
+
+>[!TIP]
+>Si usamos varias banderas con el comando **`docker run`** (el alias corto), podemos agruparlas como `-dp` o `-pd`. Ambas son equivalentes a usar `-d -p`.
+
+**ejemplo:**
+
+```bash
+docker contaniner run -dp 8080:80 docker/getting-started
+```
+
+**salida:**
+
+```bash
+Unable to find image 'docker/getting-started:latest' locally
+latest: Pulling from docker/getting-started
+cb9626c74200: Pull complete
+33e0cbbb4673: Pull complete
+1e35f6679fab: Pull complete
+f1d1c9928c82: Pull complete
+ee68d3549ec8: Pull complete 
+9b6f639ec6ea: Pull complete
+4f7e34c2de10: Pull complete
+b6334b6ace34: Pull complete
+c158987b0551: Pull complete
+Digest: sha256:d79336f4812b6547a53e735480dde67f8f8f7071b414fbd9297609ffb989abc1
+Status: Downloaded newer image for docker/getting-started:latest
+d89a6d2f322d0fb8c3bff60331f4e07213c37fae6311a2c7f83db89de6dbfef1
+PS C:\Users\Mi Equipo>
+```
+
+Ahora en el navegador se vera el contenedor en ejecución
+![Visualización del contenedor](/img/ejemplo1.png)
+
+### Importante: Agrupación y Parámetros
+
+Al agrupar banderas cortas con un solo guion (`-d -p` se convierte en `-dp`), el intérprete de comandos solo puede asignar el **primer parámetro siguiente** a la **primera bandera que lo necesite** dentro del grupo.
+
+* En el caso de **`-dp 8080:80`**, la bandera `-p` es la única que necesita un valor (`8080:80`), por lo que todo funciona correctamente.
+* **Regla de Oro:** Nunca agrupes dos o más banderas que *requieran su propio valor* (ej: `-a <valor1> -b <valor2>`) sin separarlas con guiones, ya que la segunda bandera no recibirá su parámetro.
+
+**Ejemplo de Comando Seguro (Separado):**
+
+Si tuvieras que usar dos banderas que requieren valores (como un usuario `-u` y una contraseña `-w` hipotéticas), siempre debes separarlas
+
+```bash
+# Correcto: cada bandera recibe su propio valor
+docker run -u mi_usuario -w mi_clave imagen_ejemplo
+```
+
+## Comandos para el Ciclo de Vida del Contenedor
+
+* **docker container stop:** este comando se utiliza para detener uno o varios contenedores en ejecución de manera controlada.
+
+**Sintaxis:**
+
+```bash
+docker container stop CONTAINER [CONTAINER...]
+```
+
+**ejemplo:**
+
+```bash
+docker container stop d89
+docker container ls       
+```
+
+**salida:**
+
+```bash
+d89
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+# La lista está vacía porque 'ls' por defecto solo muestra contenedores en estado 'Up'
+```
+
+* **docker container start:** este comando se utiliza para reiniciar uno o varios contenedores que se encuentran detenidos (en estado Exited)
+
+**Sintaxis:**
+
+```bash
+docker container start CONTAINER [CONTAINER...]
+```
+
+**ejemplo:**
+
+```bash
+docker container start d89
+docker container ls
+```
+
+**salida:**
+
+```bash
+d89
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS         PORTS      
+            NAMES
+d89a6d2f322d   docker/getting-started   "/docker-entrypoint.…"   45 minutes ago   Up 3 seconds   0.0.0.0:8080->80/tcp   busy_carver
+```
+
+### Ejemplo de Eliminación Forzada (`-f`)
+
+Si intentas eliminar un contenedor que se está ejecutando, Docker te dará un error y te pedirá que lo detengas primero. La bandera `-f` (force) permite saltarse ese paso y eliminarlo directamente.
+
+**Comando sin `-f` (Falla):**
+
+```bash
+docker container rm d89
+```
+
+**Salida (Error):**
+
+```bash
+Error response from daemon: cannot remove container "/busy_carver": container is running: stop the container before removing or force remove
+```
+
+**Comando con `-f` (Éxito):**
+
+```bash
+docker container rm -f d89
+```
+
+**Salida (Éxito):**
+
+```bash
+d89
+```
+
+> [!CAUTION]
+> Usar el flag -f detiene y elimina el contenedor inmediatamente, sin darle tiempo para finalizar procesos de manera ordenada. Úsalo con precaución, especialmente en entornos de producción.
