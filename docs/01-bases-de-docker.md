@@ -330,6 +330,26 @@ Si tuvieras que usar dos banderas que requieren valores (como un usuario `-u` y 
 docker run -u mi_usuario -w mi_clave imagen_ejemplo
 ```
 
+Otra bandera que es importante es **-e**
+
+|Bandera| Nombre | Descripción |
+|:-----:|:------:|:------------|
+|-e| Enviroment Variable|Define variables de entorno dentro|
+
+Para el ejemplo se usará la imagen de postgres para crear un contenedor, si no se le asigna un valor a la variable de entorno no se podra acceder a la base de datos.
+
+**Sintaxis:**
+
+```Bash
+-e <NOMBRE_VARIABLE>=<VALOR_VARIABLE>
+```
+
+**ejemplo:**
+
+```bash  
+docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+```
+
 ## Comandos para el Ciclo de Vida del Contenedor
 
 * **docker container stop:** este comando se utiliza para detener uno o varios contenedores en ejecución de manera controlada.
@@ -409,3 +429,146 @@ d89
 
 > [!CAUTION]
 > Usar el flag -f detiene y elimina el contenedor inmediatamente, sin darle tiempo para finalizar procesos de manera ordenada. Úsalo con precaución, especialmente en entornos de producción.
+
+* **docker container logs:** Este comando permite **examinar (visualizar) los logs o registros de la salida estándar** de un contenedor específico. Es esencial para la **depuración** y para ver lo que la aplicación está haciendo dentro del contenedor.
+
+**Sintaxis:**
+
+```bash
+docker container logs CONTAINER
+```
+
+**Ejemplo:** Para ver el uso de este comando se utilizará la imagen de mariadb  con tag jammy y usando la opción de creación de clave aleatoria
+
+```bash
+docker container run \
+  --name mariadb \
+  -dp 3306:3306 \
+  -e MARIADB_RANDOM_ROOT_PASSWORD=yes \
+  mariadb:jammy  
+```
+
+Si el comando falla puede ser al entorno donde se ejecute así que puede usar la sintaxis de una línea
+
+```bash
+docker container run --name mariadb -dp 3306:3306 -e MARIADB_RANDOM_ROOT_PASSWORD=yes mariadb:jammy  
+```
+
+Luego se pueden ver los logs del contenedor
+
+```bash
+docker container logs mariadb
+```
+
+**salida:**
+
+```bash
+2025-10-12 13:16:14+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:11.3.2+maria~ubu2204 started.
+2025-10-12 13:16:14+00:00 [Warn] [Entrypoint]: /sys/fs/cgroup/name=systemd:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+14:misc:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+13:rdma:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+12:pids:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+11:hugetlb:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+10:net_prio:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+9:perf_event:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+8:net_cls:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+7:freezer:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+6:devices:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+5:memory:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+4:blkio:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+3:cpuacct:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+2:cpu:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c526101:cpuset:/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610
+0::/docker/166861ec17bc22a7d7f659d5d5cfd63fe94a00fafea52bd6bd767b14b6c52610/memory.pressure not writable, functionality unavailable to MariaDB
+2025-10-12 13:16:14+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2025-10-12 13:16:14+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:11.3.2+maria~ubu2204 started.
+2025-10-12 13:16:15+00:00 [Note] [Entrypoint]: Initializing database files
+
+
+PLEASE REMEMBER TO SET A PASSWORD FOR THE MariaDB root USER !
+To do so, start the server, then issue the following command:
+
+'/usr/bin/mariadb-secure-installation'
+
+which will also give you the option of removing the test
+databases and anonymous user created by default.  This is
+strongly recommended for production servers.
+
+See the MariaDB Knowledgebase at https://mariadb.com/kb
+
+Please report any problems at https://mariadb.org/jira
+
+The latest information about MariaDB is available at https://mariadb.org/.    
+
+Consider joining MariaDB's strong and vibrant community:
+https://mariadb.org/get-involved/
+
+2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Database files initialized     
+2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Starting temporary server      
+2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Waiting for server startup     
+2025-10-12 13:16:32 0 [Note] Starting MariaDB 11.3.2-MariaDB-1:11.3.2+maria~ubu2204 source revision 068a6819eb63bcb01fdfa037c9bf3bf63c33ee42 as process 114 
+2025-10-12 13:16:32 0 [Note] InnoDB: Compressed tables use zlib 1.2.11        
+2025-10-12 13:16:32 0 [Note] InnoDB: Number of transaction pools: 1
+2025-10-12 13:16:32 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions     
+2025-10-12 13:16:32 0 [Note] mariadbd: O_TMPFILE is not supported on /tmp (disabling future attempts)
+2025-10-12 13:16:32 0 [Note] InnoDB: Using liburing
+2025-10-12 13:16:32 0 [Note] InnoDB: Initializing buffer pool, total size = 128.000MiB, chunk size = 2.000MiB
+2025-10-12 13:16:32 0 [Note] InnoDB: Completed initialization of buffer pool
+2025-10-12 13:16:32 0 [Note] InnoDB: File system buffers for log disabled (block size=4096 bytes)
+2025-10-12 13:16:32 0 [Note] InnoDB: End of log at LSN=47629
+2025-10-12 13:16:32 0 [Note] InnoDB: Opened 3 undo tablespaces
+2025-10-12 13:16:32 0 [Note] InnoDB: 128 rollback segments in 3 undo tablespaces are active.
+2025-10-12 13:16:32 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+2025-10-12 13:16:32 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.   
+2025-10-12 13:16:32 0 [Note] InnoDB: log sequence number 47629; transaction id 14
+2025-10-12 13:16:32 0 [Note] Plugin 'FEEDBACK' is disabled.
+2025-10-12 13:16:32 0 [Note] Plugin 'wsrep-provider' is disabled.
+2025-10-12 13:16:32 0 [Warning] 'user' entry 'root@166861ec17bc' ignored in --skip-name-resolve mode.
+2025-10-12 13:16:32 0 [Warning] 'proxies_priv' entry '@% root@166861ec17bc' ignored in --skip-name-resolve mode.
+2025-10-12 13:16:33 0 [Note] mariadbd: Event Scheduler: Loaded 0 events       
+2025-10-12 13:16:33 0 [Note] mariadbd: ready for connections.
+Version: '11.3.2-MariaDB-1:11.3.2+maria~ubu2204'  socket: '/run/mysqld/mysqld.sock'  port: 0  mariadb.org binary distribution
+2025-10-12 13:16:33+00:00 [Note] [Entrypoint]: Temporary server started.
+2025-10-12 13:16:42+00:00 [Note] [Entrypoint]: GENERATED ROOT PASSWORD: HpOy@+wRiQz/Q-2^t$6"KB30wv5:6Oy^
+2025-10-12 13:16:42+00:00 [Note] [Entrypoint]: Securing system users (equivalent to running mysql_secure_installation)
+
+2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: Stopping temporary server      
+2025-10-12 13:16:43 0 [Note] mariadbd (initiated by: unknown): Normal shutdown2025-10-12 13:16:43 0 [Note] InnoDB: FTS optimize thread exiting.
+2025-10-12 13:16:43 0 [Note] InnoDB: Starting shutdown...
+2025-10-12 13:16:43 0 [Note] InnoDB: Dumping buffer pool(s) to /var/lib/mysql/ib_buffer_pool
+2025-10-12 13:16:43 0 [Note] InnoDB: Buffer pool(s) dump completed at 251012 13:16:43
+2025-10-12 13:16:43 0 [Note] InnoDB: Removed temporary tablespace data file: "./ibtmp1"
+2025-10-12 13:16:43 0 [Note] InnoDB: Shutdown completed; log sequence number 47629; transaction id 15
+2025-10-12 13:16:43 0 [Note] mariadbd: Shutdown complete
+
+2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: Temporary server stopped       
+
+2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: MariaDB init process done. Ready for start up.
+
+2025-10-12 13:16:43 0 [Note] Starting MariaDB 11.3.2-MariaDB-1:11.3.2+maria~ubu2204 source revision 068a6819eb63bcb01fdfa037c9bf3bf63c33ee42 as process 1   
+2025-10-12 13:16:43 0 [Note] InnoDB: Compressed tables use zlib 1.2.11        
+2025-10-12 13:16:43 0 [Note] InnoDB: Number of transaction pools: 1
+2025-10-12 13:16:43 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions     
+2025-10-12 13:16:43 0 [Note] mariadbd: O_TMPFILE is not supported on /tmp (disabling future attempts)
+2025-10-12 13:16:43 0 [Note] InnoDB: Using liburing
+2025-10-12 13:16:43 0 [Note] InnoDB: Initializing buffer pool, total size = 128.000MiB, chunk size = 2.000MiB
+2025-10-12 13:16:43 0 [Note] InnoDB: Completed initialization of buffer pool  
+2025-10-12 13:16:43 0 [Note] InnoDB: File system buffers for log disabled (block size=4096 bytes)
+2025-10-12 13:16:43 0 [Note] InnoDB: End of log at LSN=47629
+2025-10-12 13:16:44 0 [Note] InnoDB: Opened 3 undo tablespaces
+2025-10-12 13:16:44 0 [Note] InnoDB: 128 rollback segments in 3 undo tablespaces are active.
+2025-10-12 13:16:44 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+2025-10-12 13:16:44 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.   
+2025-10-12 13:16:44 0 [Note] InnoDB: log sequence number 47629; transaction id 14
+2025-10-12 13:16:44 0 [Note] Plugin 'FEEDBACK' is disabled.
+2025-10-12 13:16:44 0 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
+2025-10-12 13:16:44 0 [Note] Plugin 'wsrep-provider' is disabled.
+2025-10-12 13:16:44 0 [Note] InnoDB: Buffer pool(s) load completed at 251012 13:16:44
+2025-10-12 13:16:44 0 [Note] Server socket created on IP: '0.0.0.0'.
+2025-10-12 13:16:44 0 [Note] Server socket created on IP: '::'.
+2025-10-12 13:16:44 0 [Note] mariadbd: Event Scheduler: Loaded 0 events       
+2025-10-12 13:16:44 0 [Note] mariadbd: ready for connections.
+Version: '11.3.2-MariaDB-1:11.3.2+maria~ubu2204'  socket: '/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
+```
+
+Con esta salida se puede ver la clave generada para el usuario root.
+**2025-10-12 13:16:42+00:00 [Note] [Entrypoint]: GENERATED ROOT PASSWORD: `HpOy@+wRiQz/Q-2^t$6"KB30wv5:6Oy^`**
