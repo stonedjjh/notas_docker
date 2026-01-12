@@ -2,13 +2,13 @@
 
 ## 1. Conceptos Fundamentales
 
-* **Imagen:** Es una plantilla inmutable de solo lectura que contiene las instrucciones para crear un contenedor.
-* **Contenedor:** Una instancia ejecutable de una imagen. Es ligero y aislado del sistema operativo.
-* **Docker Hub:** El registro público donde se almacenan las imágenes.
+- **Imagen:** Es una plantilla inmutable de solo lectura que contiene las instrucciones para crear un contenedor.
+- **Contenedor:** Una instancia ejecutable de una imagen. Es ligero y aislado del sistema operativo.
+- **Docker Hub:** El registro público donde se almacenan las imágenes.
 
 ## Comandos
 
-* **docker pull:** Este comando sirve para **descargar imagenes** desde el Docker Hub(el registro público de Docker). Primero verificara si ya tenemos el archivo en nuestro sistema,  sino la encuentra o si la version remota es mas reciente, se conectara al registro y descargara el archivo.
+- **docker pull:** Este comando sirve para **descargar imagenes** desde el Docker Hub(el registro público de Docker). Primero verificara si ya tenemos el archivo en nuestro sistema, sino la encuentra o si la version remota es mas reciente, se conectara al registro y descargara el archivo.
 
 **Sintaxis:**
 
@@ -41,15 +41,15 @@ Como se comento arriba sino se especifica la etiqueta usara la etiqueta **latest
 
 De esta salida es importante remarcar:
 
-* **Digest:** es la firma de la imagen es un hash que permite verificar si ha tenido cambios desde la ultima vez que se uso.
+- **Digest:** es la firma de la imagen es un hash que permite verificar si ha tenido cambios desde la ultima vez que se uso.
 
-* **Status:** informa si se descargo(es decir es nueva) o actualizo la imagen
+- **Status:** informa si se descargo(es decir es nueva) o actualizo la imagen
 
-* La ultima linea indica la ruta desde donde se descago la imagen.
+- La ultima linea indica la ruta desde donde se descago la imagen.
 
 Ahora que se tiene una imagen en local se puede proceder a ejecutar la misma.
 
-* **docker container run:** crear un contenedor a partir de una imagen.
+- **docker container run:** crear un contenedor a partir de una imagen.
 
 **Sintaxis:**
 
@@ -92,7 +92,7 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
 
-* **docker container --help:** lista una ayuda de los comandos que se puede utilizar con **docker container** y una breve descripcion del mismo
+- **docker container --help:** lista una ayuda de los comandos que se puede utilizar con **docker container** y una breve descripcion del mismo
 
 **Sintaxis:**
 
@@ -138,7 +138,7 @@ Commands:
 Run 'docker container COMMAND --help' for more information on a command.
 ```
 
-* **docker container ls:** lista los contenedores en ejecucion.
+- **docker container ls:** lista los contenedores en ejecucion.
 
 > [!TIP]
 > se puede usar docker ps para listar contenedor
@@ -180,7 +180,7 @@ b9ec45f0b7a2   cron-ticket   "docker-entrypoint.s…"   5 weeks ago      Exited 
 c973d8c02b7c   cron-ticket   "docker-entrypoint.s…"   5 weeks ago      Exited (255) 5 weeks ago              tender_yalow
 ```
 
-* **docker container rm:** elimina uno o varios contenedores.
+- **docker container rm:** elimina uno o varios contenedores.
 
 **Sintaxis:**
 
@@ -210,10 +210,9 @@ docker container rm 71d
 
 ## Comandos para trabajar con imagenes
 
-* **docker images:** lista todas las imágenes que están disponibles localmente en tu sistema. Estas son las imágenes que has descargado previamente usando `docker pull` o que has construido con `docker build`.
+- **docker images:** lista todas las imágenes que están disponibles localmente en tu sistema. Estas son las imágenes que has descargado previamente usando `docker pull` o que has construido con `docker build`.
 
-> [!NOTE]
-> **docker images** es el alias corto del comando moderno **docker image ls**. Ambos cumplen la misma función: listar las imágenes disponibles localmente.
+> [!NOTE] > **docker images** es el alias corto del comando moderno **docker image ls**. Ambos cumplen la misma función: listar las imágenes disponibles localmente.
 
 **Sintaxis:**
 
@@ -238,7 +237,7 @@ klerith/pokemon-nest-app   1.0.0           ee1093961251   2 years ago    657MB
 mongo-express              1.0.0-alpha.4   dcfcf89bf912   3 years ago    236MB
 ```
 
-* **docker image rm:** elimina una o varias imágenes.
+- **docker image rm:** elimina una o varias imágenes.
 
 **Sintaxis:**
 
@@ -248,7 +247,6 @@ docker image rm IMAGE [IMAGE...]
 
 > [!TIP]
 > ademas del IMAGE ID también se puede usar el nombre de la imagen
-
 
 **ejemplo:**
 
@@ -267,10 +265,10 @@ Deleted: sha256:54e66cc1dd1fcb1c3c58bd8017914dbed8701e2d8c74d9262e26bd9cc1642d31
 
 Para ejecutar aplicaciones de servidor que se mantengan activas en segundo plano y a las que podamos acceder desde nuestro navegador, necesitamos usar flags o banderas con el comando docker run
 
-|Bandera| Nombre | Descripción |
-|:-----:|:------:|:------------|
-|-d| Detached |Ejecuta el contenedor en segundo plano (modo detached). Esto libera la terminal para que puedas seguir usándola mientras el contenedor se mantiene activo.|
-|-p|Port Mapping|Mapea un puerto de tu máquina local a un puerto dentro del contenedor. Es necesario para acceder a servicios web.|
+| Bandera |    Nombre    | Descripción                                                                                                                                                |
+| :-----: | :----------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   -d    |   Detached   | Ejecuta el contenedor en segundo plano (modo detached). Esto libera la terminal para que puedas seguir usándola mientras el contenedor se mantiene activo. |
+|   -p    | Port Mapping | Mapea un puerto de tu máquina local a un puerto dentro del contenedor. Es necesario para acceder a servicios web.                                          |
 
 **Sintaxis:**
 
@@ -282,8 +280,8 @@ Para ejecutar aplicaciones de servidor que se mantengan activas en segundo plano
 
 <PUERTO_CONTENEDOR>: Es el puerto interno en el que el servicio dentro del contenedor está escuchando (ej: 80 para Nginx o 3000 para un servidor Node).
 
->[!TIP]
->Si usamos varias banderas con el comando **`docker run`** (el alias corto), podemos agruparlas como `-dp` o `-pd`. Ambas son equivalentes a usar `-d -p`.
+> [!TIP]
+> Si usamos varias banderas con el comando **`docker run`** (el alias corto), podemos agruparlas como `-dp` o `-pd`. Ambas son equivalentes a usar `-d -p`.
 
 **ejemplo:**
 
@@ -300,7 +298,7 @@ cb9626c74200: Pull complete
 33e0cbbb4673: Pull complete
 1e35f6679fab: Pull complete
 f1d1c9928c82: Pull complete
-ee68d3549ec8: Pull complete 
+ee68d3549ec8: Pull complete
 9b6f639ec6ea: Pull complete
 4f7e34c2de10: Pull complete
 b6334b6ace34: Pull complete
@@ -318,8 +316,8 @@ Ahora en el navegador se vera el contenedor en ejecución
 
 Al agrupar banderas cortas con un solo guion (`-d -p` se convierte en `-dp`), el intérprete de comandos solo puede asignar el **primer parámetro siguiente** a la **primera bandera que lo necesite** dentro del grupo.
 
-* En el caso de **`-dp 8080:80`**, la bandera `-p` es la única que necesita un valor (`8080:80`), por lo que todo funciona correctamente.
-* **Regla de Oro:** Nunca agrupes dos o más banderas que *requieran su propio valor* (ej: `-a <valor1> -b <valor2>`) sin separarlas con guiones, ya que la segunda bandera no recibirá su parámetro.
+- En el caso de **`-dp 8080:80`**, la bandera `-p` es la única que necesita un valor (`8080:80`), por lo que todo funciona correctamente.
+- **Regla de Oro:** Nunca agrupes dos o más banderas que _requieran su propio valor_ (ej: `-a <valor1> -b <valor2>`) sin separarlas con guiones, ya que la segunda bandera no recibirá su parámetro.
 
 **Ejemplo de Comando Seguro (Separado):**
 
@@ -332,9 +330,9 @@ docker run -u mi_usuario -w mi_clave imagen_ejemplo
 
 Otra bandera que es importante es **-e**
 
-|Bandera| Nombre | Descripción |
-|:-----:|:------:|:------------|
-|-e| Enviroment Variable|Define variables de entorno dentro|
+| Bandera |       Nombre        | Descripción                        |
+| :-----: | :-----------------: | :--------------------------------- |
+|   -e    | Enviroment Variable | Define variables de entorno dentro |
 
 Para el ejemplo se usará la imagen de postgres para crear un contenedor, si no se le asigna un valor a la variable de entorno no se podra acceder a la base de datos.
 
@@ -346,13 +344,13 @@ Para el ejemplo se usará la imagen de postgres para crear un contenedor, si no 
 
 **ejemplo:**
 
-```bash  
+```bash
 docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
 ```
 
 ## Comandos para el Ciclo de Vida del Contenedor
 
-* **docker container stop:** este comando se utiliza para detener uno o varios contenedores en ejecución de manera controlada.
+- **docker container stop:** este comando se utiliza para detener uno o varios contenedores en ejecución de manera controlada.
 
 **Sintaxis:**
 
@@ -364,7 +362,7 @@ docker container stop CONTAINER [CONTAINER...]
 
 ```bash
 docker container stop d89
-docker container ls       
+docker container ls
 ```
 
 **salida:**
@@ -375,7 +373,7 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 # La lista está vacía porque 'ls' por defecto solo muestra contenedores en estado 'Up'
 ```
 
-* **docker container start:** este comando se utiliza para reiniciar uno o varios contenedores que se encuentran detenidos (en estado Exited)
+- **docker container start:** este comando se utiliza para reiniciar uno o varios contenedores que se encuentran detenidos (en estado Exited)
 
 **Sintaxis:**
 
@@ -394,7 +392,7 @@ docker container ls
 
 ```bash
 d89
-CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS         PORTS      
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS         PORTS
             NAMES
 d89a6d2f322d   docker/getting-started   "/docker-entrypoint.…"   45 minutes ago   Up 3 seconds   0.0.0.0:8080->80/tcp   busy_carver
 ```
@@ -430,7 +428,7 @@ d89
 > [!CAUTION]
 > Usar el flag -f detiene y elimina el contenedor inmediatamente, sin darle tiempo para finalizar procesos de manera ordenada. Úsalo con precaución, especialmente en entornos de producción.
 
-* **docker container logs:** Este comando permite **examinar (visualizar) los logs o registros de la salida estándar** de un contenedor específico. Es esencial para la **depuración** y para ver lo que la aplicación está haciendo dentro del contenedor.
+- **docker container logs:** Este comando permite **examinar (visualizar) los logs o registros de la salida estándar** de un contenedor específico. Es esencial para la **depuración** y para ver lo que la aplicación está haciendo dentro del contenedor.
 
 **Sintaxis:**
 
@@ -445,13 +443,13 @@ docker container run \
   --name mariadb \
   -dp 3306:3306 \
   -e MARIADB_RANDOM_ROOT_PASSWORD=yes \
-  mariadb:jammy  
+  mariadb:jammy
 ```
 
 Si el comando falla puede ser al entorno donde se ejecute así que puede usar la sintaxis de una línea
 
 ```bash
-docker container run --name mariadb -dp 3306:3306 -e MARIADB_RANDOM_ROOT_PASSWORD=yes mariadb:jammy  
+docker container run --name mariadb -dp 3306:3306 -e MARIADB_RANDOM_ROOT_PASSWORD=yes mariadb:jammy
 ```
 
 Luego se pueden ver los logs del contenedor
@@ -497,18 +495,18 @@ See the MariaDB Knowledgebase at https://mariadb.com/kb
 
 Please report any problems at https://mariadb.org/jira
 
-The latest information about MariaDB is available at https://mariadb.org/.    
+The latest information about MariaDB is available at https://mariadb.org/.
 
 Consider joining MariaDB's strong and vibrant community:
 https://mariadb.org/get-involved/
 
-2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Database files initialized     
-2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Starting temporary server      
-2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Waiting for server startup     
-2025-10-12 13:16:32 0 [Note] Starting MariaDB 11.3.2-MariaDB-1:11.3.2+maria~ubu2204 source revision 068a6819eb63bcb01fdfa037c9bf3bf63c33ee42 as process 114 
-2025-10-12 13:16:32 0 [Note] InnoDB: Compressed tables use zlib 1.2.11        
+2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Database files initialized
+2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Starting temporary server
+2025-10-12 13:16:32+00:00 [Note] [Entrypoint]: Waiting for server startup
+2025-10-12 13:16:32 0 [Note] Starting MariaDB 11.3.2-MariaDB-1:11.3.2+maria~ubu2204 source revision 068a6819eb63bcb01fdfa037c9bf3bf63c33ee42 as process 114
+2025-10-12 13:16:32 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
 2025-10-12 13:16:32 0 [Note] InnoDB: Number of transaction pools: 1
-2025-10-12 13:16:32 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions     
+2025-10-12 13:16:32 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions
 2025-10-12 13:16:32 0 [Note] mariadbd: O_TMPFILE is not supported on /tmp (disabling future attempts)
 2025-10-12 13:16:32 0 [Note] InnoDB: Using liburing
 2025-10-12 13:16:32 0 [Note] InnoDB: Initializing buffer pool, total size = 128.000MiB, chunk size = 2.000MiB
@@ -518,20 +516,20 @@ https://mariadb.org/get-involved/
 2025-10-12 13:16:32 0 [Note] InnoDB: Opened 3 undo tablespaces
 2025-10-12 13:16:32 0 [Note] InnoDB: 128 rollback segments in 3 undo tablespaces are active.
 2025-10-12 13:16:32 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
-2025-10-12 13:16:32 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.   
+2025-10-12 13:16:32 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
 2025-10-12 13:16:32 0 [Note] InnoDB: log sequence number 47629; transaction id 14
 2025-10-12 13:16:32 0 [Note] Plugin 'FEEDBACK' is disabled.
 2025-10-12 13:16:32 0 [Note] Plugin 'wsrep-provider' is disabled.
 2025-10-12 13:16:32 0 [Warning] 'user' entry 'root@166861ec17bc' ignored in --skip-name-resolve mode.
 2025-10-12 13:16:32 0 [Warning] 'proxies_priv' entry '@% root@166861ec17bc' ignored in --skip-name-resolve mode.
-2025-10-12 13:16:33 0 [Note] mariadbd: Event Scheduler: Loaded 0 events       
+2025-10-12 13:16:33 0 [Note] mariadbd: Event Scheduler: Loaded 0 events
 2025-10-12 13:16:33 0 [Note] mariadbd: ready for connections.
 Version: '11.3.2-MariaDB-1:11.3.2+maria~ubu2204'  socket: '/run/mysqld/mysqld.sock'  port: 0  mariadb.org binary distribution
 2025-10-12 13:16:33+00:00 [Note] [Entrypoint]: Temporary server started.
 2025-10-12 13:16:42+00:00 [Note] [Entrypoint]: GENERATED ROOT PASSWORD: HpOy@+wRiQz/Q-2^t$6"KB30wv5:6Oy^
 2025-10-12 13:16:42+00:00 [Note] [Entrypoint]: Securing system users (equivalent to running mysql_secure_installation)
 
-2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: Stopping temporary server      
+2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: Stopping temporary server
 2025-10-12 13:16:43 0 [Note] mariadbd (initiated by: unknown): Normal shutdown2025-10-12 13:16:43 0 [Note] InnoDB: FTS optimize thread exiting.
 2025-10-12 13:16:43 0 [Note] InnoDB: Starting shutdown...
 2025-10-12 13:16:43 0 [Note] InnoDB: Dumping buffer pool(s) to /var/lib/mysql/ib_buffer_pool
@@ -540,24 +538,24 @@ Version: '11.3.2-MariaDB-1:11.3.2+maria~ubu2204'  socket: '/run/mysqld/mysqld.so
 2025-10-12 13:16:43 0 [Note] InnoDB: Shutdown completed; log sequence number 47629; transaction id 15
 2025-10-12 13:16:43 0 [Note] mariadbd: Shutdown complete
 
-2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: Temporary server stopped       
+2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: Temporary server stopped
 
 2025-10-12 13:16:43+00:00 [Note] [Entrypoint]: MariaDB init process done. Ready for start up.
 
-2025-10-12 13:16:43 0 [Note] Starting MariaDB 11.3.2-MariaDB-1:11.3.2+maria~ubu2204 source revision 068a6819eb63bcb01fdfa037c9bf3bf63c33ee42 as process 1   
-2025-10-12 13:16:43 0 [Note] InnoDB: Compressed tables use zlib 1.2.11        
+2025-10-12 13:16:43 0 [Note] Starting MariaDB 11.3.2-MariaDB-1:11.3.2+maria~ubu2204 source revision 068a6819eb63bcb01fdfa037c9bf3bf63c33ee42 as process 1
+2025-10-12 13:16:43 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
 2025-10-12 13:16:43 0 [Note] InnoDB: Number of transaction pools: 1
-2025-10-12 13:16:43 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions     
+2025-10-12 13:16:43 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions
 2025-10-12 13:16:43 0 [Note] mariadbd: O_TMPFILE is not supported on /tmp (disabling future attempts)
 2025-10-12 13:16:43 0 [Note] InnoDB: Using liburing
 2025-10-12 13:16:43 0 [Note] InnoDB: Initializing buffer pool, total size = 128.000MiB, chunk size = 2.000MiB
-2025-10-12 13:16:43 0 [Note] InnoDB: Completed initialization of buffer pool  
+2025-10-12 13:16:43 0 [Note] InnoDB: Completed initialization of buffer pool
 2025-10-12 13:16:43 0 [Note] InnoDB: File system buffers for log disabled (block size=4096 bytes)
 2025-10-12 13:16:43 0 [Note] InnoDB: End of log at LSN=47629
 2025-10-12 13:16:44 0 [Note] InnoDB: Opened 3 undo tablespaces
 2025-10-12 13:16:44 0 [Note] InnoDB: 128 rollback segments in 3 undo tablespaces are active.
 2025-10-12 13:16:44 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
-2025-10-12 13:16:44 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.   
+2025-10-12 13:16:44 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
 2025-10-12 13:16:44 0 [Note] InnoDB: log sequence number 47629; transaction id 14
 2025-10-12 13:16:44 0 [Note] Plugin 'FEEDBACK' is disabled.
 2025-10-12 13:16:44 0 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
@@ -565,10 +563,25 @@ Version: '11.3.2-MariaDB-1:11.3.2+maria~ubu2204'  socket: '/run/mysqld/mysqld.so
 2025-10-12 13:16:44 0 [Note] InnoDB: Buffer pool(s) load completed at 251012 13:16:44
 2025-10-12 13:16:44 0 [Note] Server socket created on IP: '0.0.0.0'.
 2025-10-12 13:16:44 0 [Note] Server socket created on IP: '::'.
-2025-10-12 13:16:44 0 [Note] mariadbd: Event Scheduler: Loaded 0 events       
+2025-10-12 13:16:44 0 [Note] mariadbd: Event Scheduler: Loaded 0 events
 2025-10-12 13:16:44 0 [Note] mariadbd: ready for connections.
 Version: '11.3.2-MariaDB-1:11.3.2+maria~ubu2204'  socket: '/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
 ```
 
 Con esta salida se puede ver la clave generada para el usuario root.
 **2025-10-12 13:16:42+00:00 [Note] [Entrypoint]: GENERATED ROOT PASSWORD: `HpOy@+wRiQz/Q-2^t$6"KB30wv5:6Oy^`**
+
+> [!NOTE]
+> La bandera link esta deprecada
+
+## Docker exec
+
+El comando `docker exec` permite ejecutar comandos adicionales dentro de un contenedor que ya está en ejecución. Esto es útil para tareas como inspeccionar el estado del contenedor, ejecutar scripts, o iniciar una shell interactiva.
+
+**Sintaxis:**
+
+```bash
+docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+```
+
+- **OPTIONS:** Opciones adicionales como `-it` para una sesión interactiva.
