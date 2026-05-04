@@ -1,0 +1,43 @@
+services:
+  #Se agrega un servicio nuevo encargado de monstar la aplicación
+  app:
+    build:
+      context: .
+      #Se espefica el identificador del constructor que se usara para la imagen
+      target: ${STAGE}
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app/
+      - /app/node_modules
+    container_name: nest-app
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      APP_VERSION: ${APP_VERSION}
+      STAGE: ${STAGE}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      PORT: ${PORT}
+      HOST_API: ${HOST_API}
+      JWT_SECRET: ${JWT_SECRET}
+  db:
+    image: postgres:14.3
+    restart: always
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    container_name: ${DB_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
+    external: false

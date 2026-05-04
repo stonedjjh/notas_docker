@@ -1,3 +1,6 @@
 ejercicios/02-volumenes/nest-graphql/
 ejercicios/04-docker-compose/postgres
 ejercicios/05-dockerfile/cron-ticket/node_modules
+ejercicios/06-multi-stage-build/teslo-shop/dist
+ejercicios/06-multi-stage-build/teslo-shop/node_modules
+.DS_STORE
