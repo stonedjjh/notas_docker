@@ -231,3 +231,128 @@ Este ejemplo representa la transición de contenedores aislados a una arquitectu
 3. **Abstracción y Configuración Dinámica**
    - **DNS Interno:** La comunicación entre servicios se realiza mediante el container_name (ej: http://doc_processor_app:8000), eliminando la dependencia de direcciones IP estáticas.
    - **Interpolación de Variables:** El uso de `${VARIABLE}` y archivos `env_file` permite que el mismo archivo de orquestación sea portable entre diferentes entornos de trabajo.
+
+## Multi-Stage Build y Orquestación de Producción
+
+Esta arquitectura permite optimizar el tamaño de la imagen final y garantizar que solo el código compilado y las dependencias esenciales lleguen al entorno de ejecución. Al separar las etapas, se evita cargar herramientas de desarrollo innecesarias en el contenedor de producción.
+
+### 1. Estructura del Dockerfile (Multi-Stage)
+
+El pipeline de construcción se divide en etapas lógicas para maximizar la eficiencia y seguridad:
+
+- **dev**: Etapa base para desarrollo local que utiliza el comando `yarn start:dev` para habilitar el hot-reload.
+- **dev-deps**: Se encarga de la instalación de todas las dependencias, incluyendo las de desarrollo, utilizando `--frozen-lockfile` para garantizar que las versiones sean idénticas a las del archivo lock.
+- **builder**: Etapa de compilación donde se copian los `node_modules` de desarrollo y se ejecuta `yarn build` para transformar el código TypeScript en JavaScript dentro de la carpeta `/dist`.
+- **prod-deps**: Una etapa de limpieza que realiza una instalación exclusiva de dependencias de producción, reduciendo el peso de la imagen.
+- **prod**: La imagen final optimizada. Solo contiene la carpeta `/dist` y las dependencias de producción, minimizando la superficie de ataque y el almacenamiento.
+
+```bash
+#Se agrega un paso para construir la imagen que se usara en desarrollo
+FROM node:19-alpine3.15 as dev
+WORKDIR /app
+COPY package.json ./
+RUN yarn install
+CMD ["yarn", "start:dev"]
+
+
+FROM node:19-alpine3.15 as dev-deps
+WORKDIR /app
+COPY package.json package.json
+RUN yarn install --frozen-lockfile
+
+
+FROM node:19-alpine3.15 as builder
+WORKDIR /app
+COPY --from=dev-deps /app/node_modules ./node_modules
+COPY . .
+## RUN yarn test
+RUN yarn build
+
+FROM node:19-alpine3.15 as prod-deps
+WORKDIR /app
+COPY package.json package.json
+RUN yarn install --frozen-lockfile
+
+
+FROM node:19-alpine3.15 as prod
+EXPOSE 3000
+WORKDIR /app
+ENV APP_VERSION=${APP_VERSION}
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+
+CMD [ "node","dist/main.js"]
+```
+
+### 2. Orquestación con Múltiples Archivos Compose
+
+Para gestionar el despliegue sin interferir con la configuración de desarrollo, se utiliza un archivo de composición específico llamado `docker-compose.prod.yml`.
+
+#### Archivo: docker-compose.prod.yml
+
+```yaml
+services:
+  nest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod ## Indica a Docker que debe detenerse en la etapa final de producción
+    image: teslo-shop-prod:${APP_VERSION}
+    container_name: nest_app_prod
+    restart: always
+    ports:
+      - "${PORT}:3000"
+    environment:
+      - STAGE=prod
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14.3
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    container_name: ${DB_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
+    external: false
+```
+
+### 3. Uso de la Bandera -f (File)
+
+Para levantar el entorno de producción, se utiliza la bandera `-f` para especificar el archivo de configuración alternativo.
+
+Comando de ejecución:
+`docker-compose -f docker-compose.prod.yml up --build -d`
+
+Ventajas de este enfoque
+
+- **Aislamiento:** Las herramientas y dependencias de desarrollo no llegan al servidor.
+
+- **Inmutabilidad:** La imagen generada en la etapa prod es la versión definitiva para el despliegue.
+
+- **Control de Etapas:** El uso de target: prod asegura que Docker ignore las etapas previas de desarrollo al construir la imagen final.
+
+> [!TIP]
+> Lección de Infraestructura: Al usar esta estructura, es fundamental que el archivo .env contenga la variable APP_VERSION para que la imagen generada tenga un tag correcto en el repositorio local.
+
+## Gestión Dinámica de Versiones (APP_VERSION)
+
+El uso de la variable `APP_VERSION` no es solo para etiquetar la imagen; es un puente de información que va desde tu archivo `.env` hasta el interior de tu código en ejecución.
+
+### Inyección de la Variable
+
+En el `docker-compose.prod.yml`, la variable se pasa del host al contenedor de dos formas:
+
+1. **A nivel de Imagen**: `image: teslo-shop-prod:${APP_VERSION}` asegura que al ejecutar `docker images`, puedas identificar rápidamente si tienes la versión `1.0.1` o `1.0.2`.
+2. **A nivel de Entorno**: `ENV APP_VERSION=${APP_VERSION}` dentro del Dockerfile (etapa `prod`) permite que el proceso de Node.js acceda a ella.
