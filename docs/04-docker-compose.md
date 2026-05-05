@@ -11,6 +11,8 @@ Docker Compose es una herramienta que permite definir y gestionar aplicaciones m
 
   - **image**: Es el "molde" o la plantilla a partir de la cual se crea el contenedor.
 
+  - **tty**: en Docker Compose es el equivalente a la bandera `-t` en el comando `docker run`. Su función es asignar un **pseudo-terminal** al contenedor `tty: true`.
+
   - **volumes**: Es el mecanismo para persistir y compartir datos entre el Host (tu PC) y el contenedor.
 
   - **environment**: Son las variables de entorno que configuran el comportamiento interno del software.
