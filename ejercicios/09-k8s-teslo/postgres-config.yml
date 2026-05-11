@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  # property-like keys; each key maps to a simple value
+  DB_NAME: postgres
+  DB_HOST: postgres-service
+  DB_PORT: "5432"
